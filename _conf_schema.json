@@ -69,7 +69,7 @@
         "description": "使用自定义 API 端点",
         "type": "bool",
         "default": false,
-        "hint": "关闭时使用内置官方地址，RAGFlow 无官方云服务，必须开启本选项。开启本选项后如未填写下方 API Base URL, 插件将直接报错"
+        "hint": "关闭时使用内置的官方基地址。RAGFlow 无官方云服务，必须开启本选项。开启本选项后如未填写下方 API 端点, 插件将直接报错"
       },
       "api_endpoint": {
         "description": "API 端点（基地址）",
