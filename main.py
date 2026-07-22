@@ -1,12 +1,11 @@
 import aiohttp
 from astrbot.api.event import filter, AstrMessageEvent
-from astrbot.api.star import Context, Star, register
+from astrbot.api.star import Context, Star
 from astrbot.api import logger, AstrBotConfig
 from astrbot.api.provider import ProviderRequest
 
 from .adapters import get_adapter
 
-@register("astrbot_plugin_external_knowledgebase", "Developer", "知识库自动检索插件 (支持 Dify/RAGFlow/Flowise)", "1.2.0")
 class KnowledgeBasePlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
@@ -113,25 +112,28 @@ class KnowledgeBasePlugin(Star):
             logger.debug("[知识库插件] 决策树判断无需查询，跳出。")
             return
 
-        # 4. 初始化对应的适配器
+        # 4. 初始化对应的适配器并调用后端 API 获取知识库分段
         backend_type = self.config.get("backend_type", "dify").strip()
-        api_endpoint = self.config.get("api_endpoint", "https://api.dify.ai/v1").strip()
+        api_endpoint = self.config.get("api_endpoint", "").strip()
         api_key = self.config.get("api_key", "").strip()
         dataset_id = self.config.get("dataset_id", "").strip()
         top_k = self.config.get("top_k", 3)
         score_threshold = self.config.get("score_threshold", 0.5)
 
-        adapter = get_adapter(backend_type, api_endpoint, api_key, dataset_id, top_k, score_threshold)
-
-        # 5. 调用对应的后端 API 获取知识库分段
         try:
+            adapter = get_adapter(
+                backend_type, api_endpoint, api_key, dataset_id, top_k, score_threshold,
+                use_custom_api_endpoint=self.config.get("use_custom_api_endpoint", False),
+                notion_max_chars_per_page=self.config.get("notion_max_chars_per_page", 2000),
+                notion_max_blocks_per_page=self.config.get("notion_max_blocks_per_page", 50)
+            )
             contexts = await adapter.retrieve(user_msg)
             
             if not contexts:
                 logger.info(f"[{backend_type}] 知识库: 未检索到关于 '{user_msg}' 的匹配分段。")
                 return
                 
-            # 6. 将查找到的记录组装成文本块，修改系统提示词
+            # 5. 将查找到的记录组装成文本块，修改系统提示词
             context_str = "\n\n".join([f"---片段 {i+1}---\n{c}" for i, c in enumerate(contexts)])
             knowledge_prompt_template = self.config.get(
                 "knowledge_prompt_template", 

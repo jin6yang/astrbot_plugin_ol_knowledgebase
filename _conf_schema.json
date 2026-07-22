@@ -69,14 +69,21 @@
         "options": [
           "dify",
           "ragflow",
-          "flowise"
+          "flowise",
+          "notion"
         ]
+      },
+      "use_custom_api_endpoint": {
+        "description": "使用自定义 API 端点",
+        "type": "bool",
+        "default": false,
+        "hint": "关闭时使用内置官方地址（Notion/Dify/Flowise 均有内置）；RAGFlow 无官方云服务，必须开启并填写。开启但未填写 API Base URL 将直接报错"
       },
       "api_endpoint": {
         "description": "API Base URL",
         "type": "string",
-        "default": "https://api.dify.ai/v1",
-        "hint": "Dify: https://api.dify.ai/v1 | RAGFlow: 实际部署的服务访问地址 | Flowise: https://cloud.flowiseai.com/api/v1"
+        "default": "",
+        "hint": "仅在上方「使用自定义 API 端点」开启时生效。Dify 自部署: http(s)://你的地址/v1 | RAGFlow: http(s)://你的地址 | Flowise 自部署: http(s)://你的地址/api/v1 | Notion 反代: 你的中转地址"
       },
       "api_key": {
         "description": "API Key",
@@ -88,19 +95,37 @@
         "description": "知识库 ID",
         "type": "string",
         "default": "",
-        "hint": "Dify: Dataset ID | RAGFlow: Dataset ID(多个用逗号隔开) | Flowise: Document Store ID"
+        "hint": "Dify: Dataset ID | RAGFlow: Dataset ID(多个用逗号隔开) | Flowise: Document Store ID | Notion: 无需填写"
       },
       "top_k": {
         "description": "检索数量 (Top K)",
         "type": "int",
         "default": 3,
-        "hint": "设置最多返回几个片段。一般情况推荐值区间为 3-10"
+        "hint": "设置最多返回几个片段（Notion 时为返回的页面数）。一般情况推荐值区间为 3-10"
       },
       "score_threshold": {
         "description": "最小匹配相似度",
         "type": "float",
         "default": 0.5,
-        "hint": "分数阈值, 0.0 到 1.0 (如果使用 Flowise, 此项请设为 0)"
+        "hint": "分数阈值, 0.0 到 1.0 (如果使用 Flowise, 此项请设为 0；对 Notion 无效)"
+      }
+    }
+  },
+  "config_notion": {
+    "description": "Notion 专属设置",
+    "type": "object",
+    "items": {
+      "notion_max_chars_per_page": {
+        "description": "单页最大字符数",
+        "type": "int",
+        "default": 2000,
+        "hint": "仅在知识库类型为 Notion 时生效。单页正文超过该长度将被截断。推荐保持原子化短笔记习惯；模型上下文较大时可调高"
+      },
+      "notion_max_blocks_per_page": {
+        "description": "单页最大块数",
+        "type": "int",
+        "default": 50,
+        "hint": "仅在知识库类型为 Notion 时生效。单页拉取的 Notion 块数量上限（含嵌套子块），达到上限即停止拉取"
       }
     }
   }
