@@ -69,10 +69,10 @@
         "description": "使用自定义 API 端点",
         "type": "bool",
         "default": false,
-        "hint": "关闭时使用内置官方地址（Notion/Dify/Flowise 均有内置），RAGFlow 无官方云服务，必须开启本选项。开启本选项后如未填写 API Base URL 将直接报错"
+        "hint": "关闭时使用内置官方地址，RAGFlow 无官方云服务，必须开启本选项。开启本选项后如未填写下方 API Base URL, 插件将直接报错"
       },
       "api_endpoint": {
-        "description": "API Base URL",
+        "description": "API 端点（基地址）",
         "type": "string",
         "default": "",
         "hint": "仅「使用自定义 API 端点」开启时生效。Dify 自部署: http(s)://你的地址/v1 | RAGFlow: http(s)://你的地址 | Flowise 自部署: http(s)://你的地址/api/v1 | Notion 反代: 你的中转地址"
