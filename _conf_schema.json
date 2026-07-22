@@ -99,7 +99,7 @@
         "description": "最小匹配相似度",
         "type": "float",
         "default": 0.5,
-        "hint": "相似度分数阈值, 0.0 到 1.0 (如果使用 Flowise, 此项请设为 0；此项对 Notion 无效)",
+        "hint": "相似度分数阈值, 有效范围 [0,1]. 如果使用 Flowise, 此项请设为 0. 此项对 Notion 无效",
         "slider": {
           "min": 0,
           "max": 1,
