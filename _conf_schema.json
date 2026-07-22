@@ -12,11 +12,7 @@
       "decision_mode": {
         "description": "决策模式",
         "type": "string",
-        "options": [
-          "L1",
-          "L2",
-          "L3"
-        ],
+        "options": ["L1", "L2", "L3"],
         "default": "L1",
         "hint": "选择何时触发外部知识库查询（L1=总是发送, L2=关键词判断, L3=大模型意图识别）"
       },
@@ -67,12 +63,7 @@
         "description": "知识库类型",
         "type": "string",
         "default": "dify",
-        "options": [
-          "dify",
-          "ragflow",
-          "flowise",
-          "notion"
-        ]
+        "options": ["dify", "ragflow", "flowise", "notion"]
       },
       "use_custom_api_endpoint": {
         "description": "使用自定义 API 端点",
@@ -112,25 +103,26 @@
           "min": 0,
           "max": 1,
           "step": 0.1,
-        "hint": "相似度分数阈值, 0.0 到 1.0 (如果使用 Flowise, 此项请设为 0；此项对 Notion 无效)"
+          "hint": "相似度分数阈值, 0.0 到 1.0 (如果使用 Flowise, 此项请设为 0；此项对 Notion 无效)"
+        }
       }
-    }
-  },
-  "config_notion": {
-    "description": "🤗 Notion 独立配置（仅在知识库源设置为 Notion 时生效）",
-    "type": "object",
-    "items": {
-      "notion_max_chars_per_page": {
-        "description": "单页最大字符数",
-        "type": "int",
-        "default": 2000,
-        "hint": "单页正文超过该长度将被截断。推荐保持原子化短笔记形式，模型上下文较大且注意力强大时可适当调高"
-      },
-      "notion_max_blocks_per_page": {
-        "description": "单页最大块数",
-        "type": "int",
-        "default": 50,
-        "hint": "单页拉取的 Notion 块数量上限（含嵌套子块），达到上限即停止拉取"
+    },
+    "config_notion": {
+      "description": "🤗 Notion 独立配置（仅在知识库源设置为 Notion 时生效）",
+      "type": "object",
+      "items": {
+        "notion_max_chars_per_page": {
+          "description": "单页最大字符数",
+          "type": "int",
+          "default": 2000,
+          "hint": "单页正文超过该长度将被截断。推荐保持原子化短笔记形式，模型上下文较大且注意力强大时可适当调高"
+        },
+        "notion_max_blocks_per_page": {
+          "description": "单页最大块数",
+          "type": "int",
+          "default": 50,
+          "hint": "单页拉取的 Notion 块数量上限（含嵌套子块），达到上限即停止拉取"
+        }
       }
     }
   }
