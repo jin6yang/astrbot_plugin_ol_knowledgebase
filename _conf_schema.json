@@ -2,10 +2,11 @@
   "enable": {
     "description": "启用知识库检索",
     "type": "bool",
-    "default": true
+    "default": true,
+    "hint": "此为必须项"
   },
   "config_decision": {
-    "description": "决策层配置",
+    "description": "✨ 决策层配置",
     "type": "object",
     "items": {
       "decision_mode": {
@@ -59,7 +60,7 @@
     }
   },
   "config_knowledgebase": {
-    "description": "知识库配置",
+    "description": "📚 知识库配置",
     "type": "object",
     "items": {
       "backend_type": {
@@ -77,13 +78,13 @@
         "description": "使用自定义 API 端点",
         "type": "bool",
         "default": false,
-        "hint": "关闭时使用内置官方地址（Notion/Dify/Flowise 均有内置）；RAGFlow 无官方云服务，必须开启并填写。开启但未填写 API Base URL 将直接报错"
+        "hint": "关闭时使用内置官方地址（Notion/Dify/Flowise 均有内置），RAGFlow 无官方云服务，必须开启本选项。开启本选项后如未填写 API Base URL 将直接报错"
       },
       "api_endpoint": {
         "description": "API Base URL",
         "type": "string",
         "default": "",
-        "hint": "仅在上方「使用自定义 API 端点」开启时生效。Dify 自部署: http(s)://你的地址/v1 | RAGFlow: http(s)://你的地址 | Flowise 自部署: http(s)://你的地址/api/v1 | Notion 反代: 你的中转地址"
+        "hint": "仅「使用自定义 API 端点」开启时生效。Dify 自部署: http(s)://你的地址/v1 | RAGFlow: http(s)://你的地址 | Flowise 自部署: http(s)://你的地址/api/v1 | Notion 反代: 你的中转地址"
       },
       "api_key": {
         "description": "API Key",
@@ -107,25 +108,29 @@
         "description": "最小匹配相似度",
         "type": "float",
         "default": 0.5,
-        "hint": "分数阈值, 0.0 到 1.0 (如果使用 Flowise, 此项请设为 0；对 Notion 无效)"
+        "slider": {
+          "min": 0,
+          "max": 1,
+          "step": 0.1,
+        "hint": "相似度分数阈值, 0.0 到 1.0 (如果使用 Flowise, 此项请设为 0；此项对 Notion 无效)"
       }
     }
   },
   "config_notion": {
-    "description": "Notion 专属设置",
+    "description": "🤗 Notion 独立配置（仅在知识库源设置为 Notion 时生效）",
     "type": "object",
     "items": {
       "notion_max_chars_per_page": {
         "description": "单页最大字符数",
         "type": "int",
         "default": 2000,
-        "hint": "仅在知识库类型为 Notion 时生效。单页正文超过该长度将被截断。推荐保持原子化短笔记习惯；模型上下文较大时可调高"
+        "hint": "单页正文超过该长度将被截断。推荐保持原子化短笔记形式，模型上下文较大且注意力强大时可适当调高"
       },
       "notion_max_blocks_per_page": {
         "description": "单页最大块数",
         "type": "int",
         "default": 50,
-        "hint": "仅在知识库类型为 Notion 时生效。单页拉取的 Notion 块数量上限（含嵌套子块），达到上限即停止拉取"
+        "hint": "单页拉取的 Notion 块数量上限（含嵌套子块），达到上限即停止拉取"
       }
     }
   }
