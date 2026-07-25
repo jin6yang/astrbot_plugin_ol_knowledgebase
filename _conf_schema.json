@@ -13,7 +13,7 @@
         "description": "决策模式",
         "type": "string",
         "options": ["L1", "L2", "L3"],
-        "default": "L1",
+        "default": "L3",
         "hint": "选择何时触发外部知识库查询（L1=总是发送, L2=关键词判断, L3=大模型意图识别）"
       },
       "keywords": {
