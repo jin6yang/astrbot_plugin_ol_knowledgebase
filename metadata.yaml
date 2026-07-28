@@ -2,7 +2,7 @@ name: astrbot_plugin_external_knowledgebase
 display_name: 外部知识库检索代理
 author: POINTER
 version: v0.1.0
-description: 在请求大模型之前检索外部知识库（当前支持 Dify, Flowise, RAGFlow, Notion），并将匹配的片段作为背景知识注入到上下文中。有 3 档智能等级可供选择。
+description: 提供 Bot 检索云端或本地的数据库的能力！开箱即用，支持Dify, Flowise, Notion, RAGFlow. 本插件会在请求大模型之前检索外部知识库，并将匹配的片段作为背景知识注入到上下文中。当前有 3 档智能等级可供选择。
 short_desc: Knowledge base plugin for AstrBot.
 repo: https://github.com/jin6yang/astrbot_plugin_external_knowledgebase
 astrbot_version: ">=4.5.7"
