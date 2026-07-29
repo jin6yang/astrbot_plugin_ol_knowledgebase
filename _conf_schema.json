@@ -14,7 +14,7 @@
         "type": "string",
         "options": ["L1", "L2", "L3", "taken_over"],
         "labels": ["L1 总是检索", "L2 关键词判断", "L3 大模型判断", "被外部决策层接管"],
-        "default": "L3",
+        "default": "L2",
         "hint": "选择何时检索知识库；选“被外部接管”后，本插件不再判断和注入，只对外提供检索能力"
       },
       "keywords": {
