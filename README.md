@@ -35,19 +35,22 @@ Astrbot 插件 - 外部知识库检索
 </div>
 
 > [!NOTE]
-> 本插件正在开发中......
+> 本插件为自用插件
 >
-> 本插件暂未上架 AstrBot 插件市场
+> 本插件即将上架 AstrBot 插件市场
 >
-> 本插件因为还在开发中，所以版本号可能会保持不变
+> 英文翻译将于之后推出......
+>
+> 本插件项目因为以上原因，可能无法及时响应和解决 Issues 和 PR
+
+> [!IMPORTANT]
+> 本项目支持与作者的其它 AstrBot 插件项目联动
+>
+> - [astrbot_plugin_soul_on_cue](https://github.com/jin6yang/astrbot_plugin_soul_on_cue)
 
 ## 主要功能
 
-让 AstrBot Bot 自由访问外部知识库，并且提供3种决策方案供用户选择
-
-## 更新路线图
-
-- [x] 加入查询知识库的决策层
+让 AstrBot Bot 自由访问外部知识库，并且提供3种决策方案（智能等级）供用户选择
 
 ## 安装
 
@@ -64,6 +67,8 @@ AstrBot Web UI - 插件 - 右下角"+"号 - 从链接安装
 [Dify](https://dify.ai/)（推荐）
 
 [Flowise](https://flowiseai.com/)
+
+[Notion](https://www.notion.com/)（推荐）
 
 [RAGFlow](https://ragflow.io/)（未经过完善测试）
 
@@ -107,23 +112,31 @@ L3: 调用大模型进行意图识别（推荐使用输出速度快的模型以�
 
 请结合以上背景知识回答问题。
 
-### 知识库 API 基地址
+### 知识库 API 端点 (Base URL)
 
 #### 官方云服务
 
 Dify: https://api.dify.ai/v1
 
-RAGFlow: N/A (仅支持本地部署)
-
 Flowise: https://cloud.flowiseai.com/api/v1
+
+Notion: https://api.notion.com/v1
+
+RAGFlow: N/A (仅支持本地部署)
 
 #### 本地部署（包括 Docker 部署）
 
 请修改 API 端点（API 基地址）为你的可访问地址，比如 `http://127.0.0.1:3000/api/v1`
 
-### 插件安装位置
+## 插件安装位置
 
 Windows: `%USERPROFILE%\.astrbot\data\plugins\astrbot_plugin_external_knowledgebase`
+
+Linux / macOS / OpenHarmony: 请根据 AstrBot 部署方式查找对应的目录
+
+## Q/A
+
+如果碰到一些奇怪的 Bug, 建议先重启 AstrBot 的后端。
 
 ## 感谢
 
