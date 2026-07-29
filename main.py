@@ -61,10 +61,50 @@ class KnowledgeBasePlugin(Star):
             logger.error(f"[知识库插件] 决策/重写 LLM 网络请求失败: {e}")
             return ""
 
+    def is_taken_over(self) -> bool:
+        return self.config.get("decision_mode", "L3") == "taken_over"
+
+    def _make_adapter(self):
+        backend_type = self.config.get("backend_type", "dify").strip()
+        adapter = get_adapter(
+            backend_type,
+            self.config.get("api_endpoint", "").strip(),
+            self.config.get("api_key", "").strip(),
+            self.config.get("dataset_id", "").strip(),
+            self.config.get("top_k", 3),
+            self.config.get("score_threshold", 0.5),
+            use_custom_api_endpoint=self.config.get("use_custom_api_endpoint", False),
+            notion_max_chars_per_page=self.config.get("notion_max_chars_per_page", 2000),
+            notion_max_blocks_per_page=self.config.get("notion_max_blocks_per_page", 50),
+        )
+        return backend_type, adapter
+
+    async def _retrieve_contexts(self, query: str):
+        backend_type, adapter = self._make_adapter()
+        return backend_type, await adapter.retrieve(query)
+
+    async def retrieve_text(self, query: str) -> str:
+        if not self.config.get("enable", True):
+            return ""
+        query = (query or "").strip()
+        if not query:
+            return ""
+        try:
+            backend_type, contexts = await self._retrieve_contexts(query)
+            if not contexts:
+                logger.info(f"[{backend_type}] 知识库: 未检索到关于 '{query}' 的匹配分段。")
+                return ""
+            return "\n\n".join([f"---片段 {i+1}---\n{c}" for i, c in enumerate(contexts)])
+        except Exception as e:
+            logger.error(f"[知识库插件] retrieve_text 检索异常: {e}")
+            return ""
+
     @filter.on_llm_request()
     async def intercept_llm_request(self, event: AstrMessageEvent, req: ProviderRequest):
         # 1. 检查插件开关
         if not self.config.get("enable", True):
+            return
+        if self.is_taken_over():
             return
 
         user_msg = event.message_str.strip()
@@ -114,38 +154,22 @@ class KnowledgeBasePlugin(Star):
 
         # 4. 初始化对应的适配器并调用后端 API 获取知识库分段
         backend_type = self.config.get("backend_type", "dify").strip()
-        api_endpoint = self.config.get("api_endpoint", "").strip()
-        api_key = self.config.get("api_key", "").strip()
-        dataset_id = self.config.get("dataset_id", "").strip()
-        top_k = self.config.get("top_k", 3)
-        score_threshold = self.config.get("score_threshold", 0.5)
-
         try:
-            adapter = get_adapter(
-                backend_type, api_endpoint, api_key, dataset_id, top_k, score_threshold,
-                use_custom_api_endpoint=self.config.get("use_custom_api_endpoint", False),
-                notion_max_chars_per_page=self.config.get("notion_max_chars_per_page", 2000),
-                notion_max_blocks_per_page=self.config.get("notion_max_blocks_per_page", 50)
-            )
-            contexts = await adapter.retrieve(user_msg)
-            
+            backend_type, contexts = await self._retrieve_contexts(user_msg)
             if not contexts:
                 logger.info(f"[{backend_type}] 知识库: 未检索到关于 '{user_msg}' 的匹配分段。")
                 return
-                
+
             # 5. 将查找到的记录组装成文本块，修改系统提示词
             context_str = "\n\n".join([f"---片段 {i+1}---\n{c}" for i, c in enumerate(contexts)])
             knowledge_prompt_template = self.config.get(
-                "knowledge_prompt_template", 
+                "knowledge_prompt_template",
                 "\n\n请参考以下背景知识来回答用户的问题（如果背景知识与问题无关可以忽略）：\n{context_str}\n\n请结合以上背景知识回答问题。\n"
             )
-            # Add context safely
             knowledge_prompt = knowledge_prompt_template.replace("{context_str}", context_str)
-            
-            # 将知识库内容拼接到请求 LLM 的 system_prompt
             req.system_prompt += knowledge_prompt
             logger.info(f"[{backend_type}] 知识库插件: 成功为本次对话注入 {len(contexts)} 条知识库片段作为背景知识。")
-            
+
         except aiohttp.ClientError as e:
             logger.error(f"[{backend_type}] 知识库检索网络异常: {e}")
         except Exception as e:
